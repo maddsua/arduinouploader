@@ -441,6 +441,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam){
 							inProgress = true;
 							dudeStat = 0;
 							const char* serialport;
+							serialport = serialPorts[sel_com].c_str();
 
 							if (!strcmp(db_arduino[sel_board].mcu.c_str(), "atmega32u4") && !strcmp(db_avrprog[sel_prg].c_str(), "arduino") ) {	// it's an ProMicro with Arduino Bootloader
 								// open serial port with 1200 Baud to enter bootloader
@@ -515,10 +516,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam){
 								{
 									i++;
 								}
-								serialport = serialPortsProMicro[i].c_str();
-							}
-							else {
-								serialport = serialPorts[sel_com].c_str();
+								if (i < serialPortsProMicro.size())		// COM port has changed, so ProMicro is NOT already in bootloader mode
+								{
+									serialport = serialPortsProMicro[i].c_str();
+								}
 							}
 
 							worker = std::thread(launcher, db_arduino[sel_board].mcu.c_str(), db_arduino[sel_board].ldr.c_str(), db_arduino[sel_board].speed.c_str(), serialport, filepath, &inProgress, &dudeStat);
