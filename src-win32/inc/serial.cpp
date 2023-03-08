@@ -1,4 +1,4 @@
-//  2022 maddsua | https://gitlab.com/maddsua
+//  2022 maddsua | https://github.com/maddsua
 //	No warranties are given, etc...
 //	This file is a component of the AVR Firmware Uploader
 
