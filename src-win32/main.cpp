@@ -440,6 +440,10 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam){
 							//	start routine
 							inProgress = true;
 							dudeStat = 0;
+
+
+						/*	atmega32u4 stuff added by https://github.com/elral	*/
+
 							const char* serialport;
 							serialport = serialPorts[sel_com].c_str();
 
@@ -522,6 +526,8 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam){
 									serialport = serialPortsProMicro[i].c_str();
 								}
 							}
+
+						/*	atmega32u4 stuff ended here	*/	
 
 							worker = std::thread(launcher, db_arduino[sel_board].mcu.c_str(), db_arduino[sel_board].ldr.c_str(), db_arduino[sel_board].speed.c_str(), serialport, filepath, &inProgress, &dudeStat);
 							
