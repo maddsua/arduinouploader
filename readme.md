@@ -84,20 +84,3 @@ Features:
 `attiny85; ???; 19200`
 
 - Arduino Gemma
-
----
-
-### This package includes next open-source binaries:
-
- - avrdude 6.3.0
-
-
-[👉 Download app (exe file)](build-win32/uploader-1.2.1.zip)
-
-[👉 Get avrdude.exe](build-win32/avrdude-6.3.zip)
-
-
-
-
-
-
