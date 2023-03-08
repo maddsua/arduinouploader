@@ -92,9 +92,10 @@ Features:
  - avrdude 6.3.0
 
 
-[Download package 📦](build-win32/uploader-1.2.1.zip)
+[📦 Download app (exe file)](build-win32/uploader-1.2.1.zip)
 
-[Download dude 📦](build-win32/avrdude-6.3.zip)
+[📦 Download avrdude.exe](build-win32/avrdude-6.3.zip)
+
 
 
 
