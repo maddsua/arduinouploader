@@ -440,7 +440,90 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam){
 							//	start routine
 							inProgress = true;
 							dudeStat = 0;
-							worker = std::thread(launcher, db_avrmcu[sel_mcu].c_str(), db_avrprog[sel_prg].c_str(), db_speed[sel_spd].c_str(), serialPorts[sel_com].c_str(), filepath, &inProgress, &dudeStat);
+							const char* serialport;
+							serialport = serialPorts[sel_com].c_str();
+
+							if (!strcmp(db_arduino[sel_board].mcu.c_str(), "atmega32u4") && !strcmp(db_avrprog[sel_prg].c_str(), "arduino") ) {	// it's an ProMicro with Arduino Bootloader
+								// open serial port with 1200 Baud to enter bootloader
+								DCB dcb;
+								HANDLE hCom;
+								BOOL fSuccess;
+								
+								// Filename for COM ports > 9 must be: "\\.\COM15"
+								// this syntax works also for COM ports < 10
+								std::string PortNo = "\\\\.\\" + serialPorts[sel_com];
+
+								//  Open a handle to the specified com port.
+								hCom = CreateFile(PortNo.c_str(),
+									GENERIC_READ | GENERIC_WRITE,
+									0,				//  must be opened with exclusive-access
+									NULL,			//  default security attributes
+									OPEN_EXISTING,	//  must use OPEN_EXISTING
+									0,				//  not overlapped I/O
+									NULL);			//  hTemplate must be NULL for comm devices
+
+								if (hCom == INVALID_HANDLE_VALUE)
+								{
+									MessageBox(NULL, "CreateFile failed with error","Open COM port", MB_ICONINFORMATION | MB_OK);
+									break;
+								}
+
+								//  Initialize the DCB structure.
+								SecureZeroMemory(&dcb, sizeof(DCB));
+								dcb.DCBlength = sizeof(DCB);
+
+								//  Build on the current configuration by first retrieving all current
+								//  settings.
+								fSuccess = GetCommState(hCom, &dcb);
+
+								if (!fSuccess)
+								{
+									MessageBox(NULL, "GetCommState failed with error","Open COM port", MB_ICONINFORMATION | MB_OK);
+									break;
+								}
+
+								//  Fill in some DCB values and set the com state: 
+								//  1200 bps, 8 data bits, no parity, and 1 stop bit.
+								dcb.BaudRate = CBR_1200;		//  baud rate
+								dcb.ByteSize = 8;				//  data size, xmit and rcv
+								dcb.Parity = NOPARITY;			//  parity bit
+								dcb.StopBits = ONESTOPBIT;		//  stop bit
+
+								fSuccess = SetCommState(hCom, &dcb);
+
+								if (!fSuccess)
+								{
+									MessageBox(NULL, "SetCommState failed with error","Open COM port", MB_ICONINFORMATION | MB_OK);
+								}
+
+								//  Get the comm config again.
+								fSuccess = GetCommState(hCom, &dcb);
+
+								if (!fSuccess)
+								{
+									MessageBox(NULL, "GetCommState failed with error","Open COM port", MB_ICONINFORMATION | MB_OK);
+									break;
+								}
+
+								// wait to appear new COM port
+								Sleep(1500);
+
+								// and get the new COM port
+								getPorts(&serialPortsProMicro);
+								u_int i = 0;
+								// check which is the new one
+								while (!strcmp(serialPorts[i].c_str(), serialPortsProMicro[i].c_str()) && i < serialPortsProMicro.size())
+								{
+									i++;
+									if (i == serialPortsProMicro.size()) break;
+								}
+								if (i < serialPortsProMicro.size())		// COM port has changed, so ProMicro is NOT already in bootloader mode
+								{
+									serialport = serialPortsProMicro[i].c_str();
+								}
+							}
+
+							worker = std::thread(launcher, db_arduino[sel_board].mcu.c_str(), db_arduino[sel_board].ldr.c_str(), db_arduino[sel_board].speed.c_str(), serialport, filepath, &inProgress, &dudeStat);
 							
 							break;
 						}
