@@ -442,7 +442,7 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT Message, WPARAM wParam, LPARAM lParam){
 							dudeStat = 0;
 							const char* serialport;
 
-							if (!strcmp(db_arduino[sel_board].mcu.c_str(), "atmega32u4") && !strcmp(db_avrprog[sel_prg].mcu.c_str(), "arduino") ) {	// it's an ProMicro with Arduino Bootloader
+							if (!strcmp(db_arduino[sel_board].mcu.c_str(), "atmega32u4") && !strcmp(db_avrprog[sel_prg].c_str(), "arduino") ) {	// it's an ProMicro with Arduino Bootloader
 								// open serial port with 1200 Baud to enter bootloader
 								DCB dcb;
 								HANDLE hCom;
